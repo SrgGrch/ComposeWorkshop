@@ -21,7 +21,7 @@ class TodoViewModel : ViewModel() {
     val state: StateFlow<State> get() = _state
     private val _state = MutableStateFlow<State>(State.Loading)
 
-    private var list = mutableListOf<TodoItem>().apply {
+    private var list: List<TodoItem> = mutableListOf<TodoItem>().apply {
         addAll(sampleList)
     }
 
@@ -34,16 +34,19 @@ class TodoViewModel : ViewModel() {
     }
 
     fun addTodoItem(name: String) {
-        list += TodoItem(list.last().id + 1, name, false)
+        list += (TodoItem(list.maxOf { it.id } + 1, name, false))
         _state.value = State.Data(list)
     }
 
     fun changeChacked(todoItem: TodoItem) {
-        list = list.map {
-            if (it == todoItem) {
-                it.copy(isDone = !todoItem.isDone)
-            } else it
-        }.toMutableList()
+        list = list
+            .map {
+                if (it == todoItem) {
+                    it.copy(isDone = !todoItem.isDone)
+                } else it
+            }
+            .sortedWith(compareBy({ !it.isDone }, { it.id }))
+            .toMutableList()
 
         _state.value = State.Data(list)
     }

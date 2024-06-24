@@ -3,4 +3,6 @@
     <string name="mainScreenTitle">TodoApp</string>
     <string name="mainScreenButtonNext">Дальше</string>
     <string name="mainScreenButtonExit">Выйти</string>
+    <string name="todoScreenNewTodoButton">Добавить</string>
+    <string name="todoScreenNewTodoLabel">Добавить задачу</string>
 </resources>
