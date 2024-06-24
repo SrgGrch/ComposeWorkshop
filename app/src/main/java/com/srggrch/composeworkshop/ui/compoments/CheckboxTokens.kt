@@ -1,4 +1,4 @@
-package com.srggrch.composeworkshop.ui.screen.compoments
+package com.srggrch.composeworkshop.ui.compoments
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
