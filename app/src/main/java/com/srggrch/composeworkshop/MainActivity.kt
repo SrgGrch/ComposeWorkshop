@@ -4,9 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +16,6 @@ import com.srggrch.composeworkshop.ui.Screens
 import com.srggrch.composeworkshop.ui.screen.MainScreen
 import com.srggrch.composeworkshop.ui.screen.TodoScreen
 import com.srggrch.composeworkshop.ui.theme.ComposeWorkshopTheme
-import kotlinx.coroutines.MainScope
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,21 +23,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ComposeWorkshopTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    var currentScreen by remember {
-                        mutableStateOf(Screens.MAIN)
-                    }
+                var currentScreen by remember {
+                    mutableStateOf(Screens.MAIN)
+                }
 
-                    when (currentScreen) {
-                        Screens.MAIN -> MainScreen({
-                            currentScreen = Screens.TODO
-                        }, Modifier.padding(innerPadding))
+                when (currentScreen) {
+                    Screens.MAIN -> MainScreen({
+                        currentScreen = Screens.TODO
+                    })
 
-                        Screens.TODO -> TodoScreen(
-                            onBackClicked = { currentScreen = Screens.MAIN },
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                    }
+                    Screens.TODO -> TodoScreen(
+                        onBackClicked = { currentScreen = Screens.MAIN }
+                    )
                 }
             }
         }

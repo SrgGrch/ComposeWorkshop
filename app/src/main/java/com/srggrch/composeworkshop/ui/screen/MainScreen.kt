@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,49 +28,57 @@ import com.srggrch.composeworkshop.R
 
 @Composable
 fun MainScreen(
-    onNextClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    onNextClicked: () -> Unit
 ) {
     val activity = LocalContext.current as Activity
 
-    Column(
-        modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.Gray)
-                .padding(horizontal = 24.dp, vertical = 36.dp)
-        ) {
-            Text(text = stringResource(id = R.string.mainScreenTitle), fontSize = 24.sp, color = Color.White)
-        }
-
-        Spacer(modifier = Modifier.height(64.dp))
-
-        Button(
-            onClick = {
-                onNextClicked()
-            },
+    Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+        Column(
             Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .fillMaxSize()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(stringResource(id = R.string.mainScreenButtonNext))
+
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Gray)
+                    .padding(horizontal = 24.dp, vertical = 36.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.mainScreenTitle),
+                    fontSize = 24.sp,
+                    color = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Button(
+                onClick = {
+                    onNextClicked()
+                },
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(stringResource(id = R.string.mainScreenButtonNext))
+            }
+
+            Button(
+                onClick = {
+                    activity.finish()
+                },
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(stringResource(id = R.string.mainScreenButtonExit))
+            }
         }
 
-        Button(
-            onClick = {
-                activity.finish()
-            },
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            Text(stringResource(id = R.string.mainScreenButtonExit))
-        }
     }
 }
 

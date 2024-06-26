@@ -1,21 +1,18 @@
 package com.srggrch.composeworkshop.ui.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -24,7 +21,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -51,7 +46,6 @@ import com.srggrch.composeworkshop.ui.screen.todo.sampleList
 @Composable
 fun TodoScreen(
     onBackClicked: () -> Unit,
-    modifier: Modifier = Modifier,
     todoViewModel: TodoViewModel = viewModel()
 ) {
     val state by todoViewModel.state.collectAsState()
@@ -60,8 +54,7 @@ fun TodoScreen(
         state = state,
         onBackClicked = onBackClicked,
         onCheckedChanged = todoViewModel::changeChacked,
-        onAddClicked = todoViewModel::addTodoItem,
-        modifier = modifier
+        onAddClicked = todoViewModel::addTodoItem
     )
 }
 
@@ -71,11 +64,31 @@ private fun Content(
     onBackClicked: () -> Unit,
     onCheckedChanged: (TodoItem) -> Unit,
     onAddClicked: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    when (state) {
-        is TodoViewModel.State.Data -> Data(state, onBackClicked, onCheckedChanged, onAddClicked, modifier)
-        TodoViewModel.State.Loading -> Loading(modifier)
+    Scaffold(
+        Modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        topBar = {
+            IconButton(onClick = onBackClicked) {
+                Icon(
+                    painter = rememberVectorPainter(image = Icons.AutoMirrored.Default.ArrowBack),
+                    contentDescription = "backButton"
+                )
+            }
+        }
+    ) { innerPadding ->
+        when (state) {
+            is TodoViewModel.State.Data -> Data(
+                state,
+                onCheckedChanged,
+                onAddClicked,
+                Modifier.padding(innerPadding)
+            )
+
+            TodoViewModel.State.Loading -> Loading(Modifier.padding(innerPadding))
+        }
+
     }
 }
 
@@ -83,23 +96,12 @@ private fun Content(
 @Composable
 private fun Data(
     state: TodoViewModel.State.Data,
-    onBackClicked: () -> Unit,
     onCheckedChanged: (TodoItem) -> Unit,
     onAddClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = {
-            Column {
-                IconButton(onClick = onBackClicked) {
-                    Icon(
-                        painter = rememberVectorPainter(image = Icons.AutoMirrored.Default.ArrowBack),
-                        contentDescription = "backButton"
-                    )
-                }
-            }
-        }
     ) { paddingValues ->
         LazyColumn(
             Modifier.padding(paddingValues),
@@ -120,7 +122,11 @@ private fun Data(
 }
 
 @Composable
-private fun TodoItem(todoItem: TodoItem, onCheckedChanged: (TodoItem) -> Unit, modifier: Modifier = Modifier) {
+private fun TodoItem(
+    todoItem: TodoItem,
+    onCheckedChanged: (TodoItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -147,7 +153,9 @@ private fun NewTodoItem(onAddClicked: (String) -> Unit, modifier: Modifier = Mod
         OutlinedTextField(
             value = todoName,
             onValueChange = { todoName = it },
-            Modifier.weight(1f).focusRequester(focusRequester),
+            Modifier
+                .weight(1f)
+                .focusRequester(focusRequester),
             label = {
                 Text(text = stringResource(id = R.string.todoScreenNewTodoLabel))
             }
